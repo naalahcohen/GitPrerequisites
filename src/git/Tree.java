@@ -1,17 +1,20 @@
 package git;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 public class Tree {
-	public static void makeTree(ArrayList<String> list) throws IOException {
+	public static void makeTree(ArrayList<String> list) throws Exception {
 		File tree = new File("Objects/tree");
 		tree.createNewFile();
 		FileWriter myWriter = new FileWriter("Objects/tree");
@@ -22,30 +25,14 @@ public class Tree {
 		      System.out.println("Successfully wrote to the file.");
 		}
 		myWriter.close();
-		String contents = readFile(tree.getName(), StandardCharsets.US_ASCII);
+		String contents = readFile(tree.getPath(), StandardCharsets.US_ASCII);
 		String sha1 = encryptThisString(contents);
 		File newFile = new File("Objects/" + sha1);
 		newFile.createNewFile();
-		renameFile(tree.getName(), newFile.getName());
-	}
-	public static void renameFile(String oldName, String newName) throws IOException {
-		// File (or directory) with old name
-		File file = new File(oldName);
+		copyContent(tree, newFile);
+		tree.delete();
+}
 
-		// File (or directory) with new name
-		File file2 = new File(newName);
-
-		if (file2.exists())
-		   throw new java.io.IOException("file exists");
-
-		// Rename file (or directory)
-		boolean success = file.renameTo(file2);
-
-		if (!success) {
-			System.out.println("File not renamed");
-		}
-
-	}
 	public static String readFile(String path, Charset encoding) throws IOException {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
         return new String(encoded, encoding);
@@ -74,5 +61,33 @@ public class Tree {
         catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-}
+	}
+	public static void copyContent(File a, File b) throws Exception
+    {
+        FileInputStream in = new FileInputStream(a);
+        FileOutputStream out = new FileOutputStream(b);
+        try {
+            int n;
+            // read() function to read the
+            // byte of data
+            while ((n = in.read()) != -1) {
+                // write() function to write
+                // the byte of data
+                out.write(n);
+            }
+        }
+        finally {
+            if (in != null) {
+                // close() function to close the
+                // stream
+                in.close();
+            }
+            // close() function to close
+            // the stream
+            if (out != null) {
+                out.close();
+            }
+        }
+        System.out.println("File Copied");
+    }
 }
