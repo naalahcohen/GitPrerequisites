@@ -14,7 +14,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 public class Tree {
-	public static void makeTree(ArrayList<String> list) throws Exception {
+	public Tree(ArrayList<String> list) throws Exception {
 		File tree = new File("Objects/tree");
 		tree.createNewFile();
 		FileWriter myWriter = new FileWriter("Objects/tree");
